@@ -41,8 +41,9 @@ std::list<ModConflict> getModConflicts(std::list<Mod> const& modList)
             all_files.emplace(file, mod.name());
         }
     }
-    // sort files in a way that matches Valve's string implementation
+    // Sort files in a way that matches Valve's string implementation
     unique_files.sort(less_strcmp_QString());
+    // Get rid of all the files we've added more than once from different mods
     unique_files.unique();
 
     // Analyse the files and mods for conflicts
@@ -58,17 +59,23 @@ std::list<ModConflict> getModConflicts(std::list<Mod> const& modList)
             {
                 mods.push_back(i->second);
             }
-            //std::list<ModConflict>::iterator existing_conflict = modmatch_ModConflict(conflicts.begin(), conflicts.end(), mods);	// this is almost std::find, it has to comapre mods to a part of the structure
-            auto existingConflictIterator = std::find_if(results.begin(), results.end(), [&](ModConflict const& mc){ return mc.mods() == mods;});
-            if (existingConflictIterator != results.end()) // a conflict exists with that mod list add the file to it
+            // find a conflict with that mod list
+            auto existingConflictIterator = std::find_if(results.begin(),
+                                                         results.end(),
+                                                         [&](ModConflict const& mc){ return mc.mods() == mods;} );
+            // if a conflict exists with that mod list add the file to it
+            if (existingConflictIterator != results.end())
             {
                 existingConflictIterator->addFile(file);
             }
-            else // create a new conflict entry with that file
+            // else create a new conflict entry with that file
+            else
             {
                 ModConflict new_conflict{};
                 for(auto& mod : mods)
+                {
                     new_conflict.addMod(mod);
+                }
                 new_conflict.addFile(file);
                 results.push_back(new_conflict);
             }

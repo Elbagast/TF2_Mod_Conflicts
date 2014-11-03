@@ -425,10 +425,6 @@ void MainWindow::message_ignoreFiles()
     outputAppend();
 }
 
-
-
-
-
 // Settings functions
 //================================================================================
 QString MainWindow::getSettingsPath() const
@@ -439,7 +435,9 @@ QString MainWindow::getSettingsPath() const
     path selfPath = toPath(QApplication::arguments().front());
 
     // Path to the settings file
-    path settingsPath{ selfPath.parent_path() / "settings.ini"};
+    //path settingsPath{ selfPath.parent_path() / "settings.ini"};
+    path settingsPath = selfPath;
+    settingsPath.replace_extension("ini");
 
     return toQString(settingsPath);
 }
@@ -453,6 +451,7 @@ void MainWindow::readSettings()
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("windowState").toByteArray());
 
+    //updateTf2Path(settings.value("TF2").toString());
     ui->tf2pathLineEdit->setText(settings.value("TF2").toString());
 
     setIgnoreMods(settings.value("IGNORE_MODS").toBool());
@@ -510,17 +509,4 @@ void MainWindow::writeSettings()
         ++file_index;
     }
     settings.endArray();
-}
-
-// Non-member functions
-//================================================================================
-QString toQString(boost::filesystem::path const& pathToConvert)
-{
-    return QString(pathToConvert.string().c_str());
-}
-boost::filesystem::path toPath(QString const& qstringToConvert)
-{
-    boost::filesystem::path result{qstringToConvert.toStdWString()};
-    result.make_preferred();
-    return result;
 }

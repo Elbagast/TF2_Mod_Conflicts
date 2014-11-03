@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     mod.cpp \
     modconflict.cpp \
     editablelistmodel.cpp \
-    editablelistview.cpp
+    editablelistview.cpp \
+    qt_boost/filesystem.cpp
 
 HEADERS  += mainwindow.h \
     mod.h \

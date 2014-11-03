@@ -1,6 +1,12 @@
 #ifndef MODCONFLICT_H
 #define MODCONFLICT_H
-
+/*
+ModConflict
+======================================
+Class to contain a list of files and a list of mods which ALL contain ALL of those files.
+Mods and files are sorted using std::strcmp so that the sort orders correspond to how the
+Source engine's string implementation sort.
+*/
 #include <list>
 #include <QString>
 

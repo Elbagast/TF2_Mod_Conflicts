@@ -1,7 +1,10 @@
 #ifndef LESS_STRCMP_QSTRING_H
 #define LESS_STRCMP_QSTRING_H
 /*
-String comparison functor that acts using std::strcmp instead of operator<
+less_strcmp_QString
+======================================
+QString comparison functor that acts using std::strcmp instead of operator<, allowing
+comparison to match the Source Engine's string implementation sort.
 */
 #include <functional>
 #include <cstring>

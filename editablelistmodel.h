@@ -3,7 +3,7 @@
 /*
 EditableListModel
 ======================================
-Data model for an editable list of strings with item add, edit, remove and sorting.
+Data model for an editable vector of strings with item add, edit, remove and sorting.
 
 Should be used in conjunction with an EditableListView widget if you want to use the custom context menu.
 */
@@ -58,7 +58,6 @@ private:
 
     QString m_headerText;
     std::vector<QString> m_data;
-
 };
 
 #endif // EDITABLELISTMODEL_H

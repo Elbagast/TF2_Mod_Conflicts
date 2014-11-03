@@ -17,12 +17,13 @@ public:
     ~EditableListView() override = default;
 
 protected:
+    // This doesn't seem to be doing what it should (enforcing a smaller default size on the widget)
     //QSize viewportSizeHint() const override;
 
 signals:
 
 public slots:
-    // On constuction this is connected to the sginal this->customContextMenuRequested
+    // On constuction this is connected to the signal this->customContextMenuRequested
     void onCustomContextMenuRequested(QPoint const& pos);
 };
 

@@ -1,7 +1,17 @@
 #ifndef MOD_H
 #define MOD_H
 /*
+Mod
+======================================
+Class to contain a list of files and for a given mod. The mod may be a directory or a .vpk
+file. Files are sorted using std::strcmp so that the sort orders correspond to how the
+Source engine's string implementation sort.
 
+It might be worth making Mod an abstract class with DirectoryMod and VpkMod derived classes,
+though I haven't thought about the usefullness of this yet. Maybe if a mod was responsible for
+loading itself on demand...
+
+...or we needed .vpk actions in a non-Mod context like accessing the game files...
 */
 #include <list>
 #include <QString>
