@@ -14,9 +14,6 @@ TEMPLATE = app
 # Remember to use 32bit compiler...
 CONFIG += static
 CONFIG += threads
-win32:LIBS += -L"C:/Boost/boost_1_55_0/stage/lib"
-win32:INCLUDEPATH += "C:/Boost/boost_1_55_0"
-win32:DEPENDPATH += "C:/Boost/boost_1_55_0/stage/lib"
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -24,15 +21,15 @@ SOURCES += main.cpp\
     modconflict.cpp \
     editablelistmodel.cpp \
     editablelistview.cpp \
-    qt_boost/filesystem.cpp
+    filesystem.cpp
 
 HEADERS  += mainwindow.h \
     mod.h \
-    qt_boost/filesystem.h \
     modconflict.h \
     less_strcmp_qstring.h \
     editablelistmodel.h \
-    editablelistview.h
+    editablelistview.h \
+    filesystem.h
 
 FORMS    += mainwindow.ui
 

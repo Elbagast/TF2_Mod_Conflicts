@@ -136,7 +136,7 @@
           </widget>
          </item>
          <item>
-          <widget class="EditableListView" name="ignoreModsListView">
+          <widget class="tf2mc::EditableListView" name="ignoreModsListView">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
              <horstretch>0</horstretch>
@@ -166,7 +166,7 @@
           </widget>
          </item>
          <item>
-          <widget class="EditableListView" name="ignoreFilesListView">
+          <widget class="tf2mc::EditableListView" name="ignoreFilesListView">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
              <horstretch>0</horstretch>
@@ -190,10 +190,6 @@
         </layout>
        </item>
       </layout>
-      <zorder>actionsGroupBox</zorder>
-      <zorder>verticalLayoutWidget</zorder>
-      <zorder>verticalLayoutWidget_2</zorder>
-      <zorder>verticalLayoutWidget_3</zorder>
      </widget>
     </item>
     <item>
@@ -292,15 +288,12 @@
         </widget>
        </item>
       </layout>
-      <zorder>tf2pathLabel</zorder>
-      <zorder>outputTextEdit</zorder>
      </widget>
     </item>
    </layout>
-   <zorder>horizontalLayoutWidget_2</zorder>
+   <zorder>actionsGroupBox</zorder>
+   <zorder>outputGroupBox</zorder>
    <zorder>settingsGroupBox</zorder>
-   <zorder>splitter</zorder>
-   <zorder>verticalLayoutWidget</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -370,7 +363,7 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>EditableListView</class>
+   <class>tf2mc::EditableListView</class>
    <extends>QListView</extends>
    <header>editablelistview.h</header>
   </customwidget>

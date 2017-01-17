@@ -1,13 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "modconflict.h"
+
+#include <string>
+#include <thread>
+
 #include <QFileDialog>
 #include <QProcess>
 #include <QSettings>
-#include <string>
-#include <memory>
 
-MainWindow::MainWindow(QWidget *parent) :
+
+tf2mc::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_tf2Path{},
@@ -33,12 +36,10 @@ MainWindow::MainWindow(QWidget *parent) :
     //message_settings();
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
+// Qt Creator doesn't like this line but it is legal and compiles
+tf2mc::MainWindow::~MainWindow() = default;
 
-void MainWindow::closeEvent(QCloseEvent* event)
+void tf2mc::MainWindow::closeEvent(QCloseEvent* event)
 {
     // if settings have changed...ask if we want to save them
     // save settings
@@ -49,18 +50,18 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
 // private slots
 //================================================================================
-void MainWindow::browseForTf2Path()
+void tf2mc::MainWindow::browseForTf2Path()
 {
     QString tf2Path = QFileDialog::getExistingDirectory(this, tr("Your 'Team Fortess 2' directory"));
     if(tf2Path.size() != 0)
         ui->tf2pathLineEdit->setText(tf2Path);
 }
 
-void MainWindow::updateTf2Path(QString tf2Path)
+void tf2mc::MainWindow::updateTf2Path(QString tf2Path)
 {
-    using boost::filesystem::path;
-    using boost::filesystem::exists;
-    using boost::filesystem::is_directory;
+    using filesystem::path;
+    using filesystem::exists;
+    using filesystem::is_directory;
 
     //outputAppend("updateTf2Path(QString)");
     path new_tf2Path(tf2Path.toStdWString());
@@ -77,7 +78,7 @@ void MainWindow::updateTf2Path(QString tf2Path)
     updateCustomDirectory(m_tf2Path);
 }
 
-void MainWindow::scanForConflicts()
+void tf2mc::MainWindow::scanForConflicts()
 {
     outputAppend("Scan for mod conflicts");
     outputAppend("========================================");
@@ -142,7 +143,7 @@ void MainWindow::scanForConflicts()
         ++conflictNumber;
     }
 }
-void MainWindow::listAllModFiles()
+void tf2mc::MainWindow::listAllModFiles()
 {
     outputAppend("List of all files in all mods");
     outputAppend("========================================");
@@ -168,11 +169,11 @@ void MainWindow::listAllModFiles()
         outputAppend();
     }
 }
-void MainWindow::showSettings()
+void tf2mc::MainWindow::showSettings()
 {
     message_settings();
 }
-void MainWindow::showAutoSettings(bool value)
+void tf2mc::MainWindow::showAutoSettings(bool value)
 {
     if(value)
     {
@@ -184,11 +185,11 @@ void MainWindow::showAutoSettings(bool value)
     }
 }
 
-void MainWindow::updateVpkExe(boost::filesystem::path const& tf2Path)
+void tf2mc::MainWindow::updateVpkExe(filesystem::path const& tf2Path)
 {
-    using boost::filesystem::path;
-    using boost::filesystem::exists;
-    using boost::filesystem::is_regular_file;
+    using filesystem::path;
+    using filesystem::exists;
+    using filesystem::is_regular_file;
 
     path vpkExePath = tf2Path / path("\\bin\\vpk.exe");
     vpkExePath.make_preferred();
@@ -203,11 +204,11 @@ void MainWindow::updateVpkExe(boost::filesystem::path const& tf2Path)
         ui->vpkExeLabel->setText("Could not find \\Team Fortress 2\\bin\\vpk.exe");
     }
 }
-void MainWindow::updateCustomDirectory(boost::filesystem::path const& tf2Path)
+void tf2mc::MainWindow::updateCustomDirectory(filesystem::path const& tf2Path)
 {
-    using boost::filesystem::path;
-    using boost::filesystem::exists;
-    using boost::filesystem::is_directory;
+    using filesystem::path;
+    using filesystem::exists;
+    using filesystem::is_directory;
 
     path customDirectoryPath = tf2Path / path("\\tf\\custom");
     customDirectoryPath.make_preferred();
@@ -223,11 +224,11 @@ void MainWindow::updateCustomDirectory(boost::filesystem::path const& tf2Path)
     }
 }
 
-Mod MainWindow::parseDirectoryMod(boost::filesystem::path const& modPath) const
+tf2mc::Mod tf2mc::MainWindow::parseDirectoryMod(filesystem::path const& modPath) const
 {
-    using boost::filesystem::path;
-    using boost::filesystem::is_regular_file;
-    using boost::filesystem::recursive_directory_iterator;
+    using filesystem::path;
+    using filesystem::is_regular_file;
+    using filesystem::recursive_directory_iterator;
 
     std::list<QString> modFiles;
     for (recursive_directory_iterator recDirIterator(modPath), end; recDirIterator != end; ++recDirIterator)
@@ -242,10 +243,10 @@ Mod MainWindow::parseDirectoryMod(boost::filesystem::path const& modPath) const
             modFiles.push_back(toQString(short_filePath));
         }
     }
-    Mod parsedMod{modPath.leaf(), modFiles};
+    Mod parsedMod{modPath.filename(), modFiles};
     return parsedMod;
 }
-Mod MainWindow::parseVpkMod(boost::filesystem::path const& modPath) const
+tf2mc::Mod tf2mc::MainWindow::parseVpkMod(filesystem::path const& modPath) const
 {
     QString qVpkExePath = toQString(m_vpkExePath);
     QStringList qVpkExeArguments;
@@ -276,16 +277,16 @@ Mod MainWindow::parseVpkMod(boost::filesystem::path const& modPath) const
     // Path formatting to preferred
     modFiles.replaceInStrings("/", "\\");
 
-    Mod parsedMod{modPath.leaf(), modFiles.toStdList()};
+    Mod parsedMod{modPath.filename(), modFiles.toStdList()};
     return parsedMod;
 }
 
-std::list<Mod> MainWindow::parseAllMods()
+std::list<tf2mc::Mod> tf2mc::MainWindow::parseAllMods()
 {
-    using boost::filesystem::path;
-    using boost::filesystem::is_regular_file;
-    using boost::filesystem::is_directory;
-    using boost::filesystem::directory_iterator;
+    using filesystem::path;
+    using filesystem::is_regular_file;
+    using filesystem::is_directory;
+    using filesystem::directory_iterator;
 
     std::list<Mod> modList;
 
@@ -309,7 +310,7 @@ std::list<Mod> MainWindow::parseAllMods()
        // message_ignoreMods();
         for (auto& modName : m_ignoreModsModel->getData())
         {
-            modList.remove_if([&](Mod const& foundMod){ return foundMod.name() == modName;});
+            modList.remove_if([&modName](Mod const& foundMod){ return foundMod.name() == modName;});
         }
     }
 
@@ -331,45 +332,45 @@ std::list<Mod> MainWindow::parseAllMods()
 
 // Member variable convenience
 //================================================================================
-bool MainWindow::settingsAreValid() const
+bool tf2mc::MainWindow::settingsAreValid() const
 {
     return !(m_tf2Path.empty() ||
              m_vpkExePath.empty() ||
              m_customDirectoryPath.empty() );
 }
-bool MainWindow::ignoreMods() const
+bool tf2mc::MainWindow::ignoreMods() const
 {
     return ui->ignoreModsCheckBox->isChecked();
 }
-bool MainWindow::ignoreFiles() const
+bool tf2mc::MainWindow::ignoreFiles() const
 {
     return ui->ignoreFilesCheckBox->isChecked();
 }
-void MainWindow::outputAppend(QString const& value)
+void tf2mc::MainWindow::outputAppend(QString const& value)
 {
     ui->outputTextEdit->append(value);
 }
-void MainWindow::outputClear()
+void tf2mc::MainWindow::outputClear()
 {
     ui->outputTextEdit->clear();
 }
 
-void MainWindow::setIgnoreMods(bool value)
+void tf2mc::MainWindow::setIgnoreMods(bool value)
 {
     ui->ignoreModsCheckBox->setChecked(value);
 }
-void MainWindow::setIgnoreFiles(bool value)
+void tf2mc::MainWindow::setIgnoreFiles(bool value)
 {
     ui->ignoreFilesCheckBox->setChecked(value);
 }
 
 // Messages printed to output
 //================================================================================
-void MainWindow::message_settingsAreNotValid()
+void tf2mc::MainWindow::message_settingsAreNotValid()
 {
     outputAppend("Could not run, settings are invalid.");
 }
-void MainWindow::message_settings()
+void tf2mc::MainWindow::message_settings()
 {
     outputClear();
 
@@ -389,7 +390,7 @@ void MainWindow::message_settings()
     message_ignoreMods();
     message_ignoreFiles();
 }
-void MainWindow::message_ignoreMods()
+void tf2mc::MainWindow::message_ignoreMods()
 {
     outputAppend("Ignore mods:");
     outputAppend("--------------------");
@@ -406,7 +407,7 @@ void MainWindow::message_ignoreMods()
     }
     outputAppend();
 }
-void MainWindow::message_ignoreFiles()
+void tf2mc::MainWindow::message_ignoreFiles()
 {
     outputAppend("Ignore files:");
     outputAppend("--------------------");
@@ -427,9 +428,9 @@ void MainWindow::message_ignoreFiles()
 
 // Settings functions
 //================================================================================
-QString MainWindow::getSettingsPath() const
+QString tf2mc::MainWindow::getSettingsPath() const
 {
-    using boost::filesystem::path;
+    using filesystem::path;
 
     // Path to this executable
     path selfPath = toPath(QApplication::arguments().front());
@@ -442,7 +443,7 @@ QString MainWindow::getSettingsPath() const
     return toQString(settingsPath);
 }
 
-void MainWindow::readSettings()
+void tf2mc::MainWindow::readSettings()
 {
     // this first line works, but I have no idea where the file goes
     //QSettings settings("Elbagast", "TF2_Mod_Conflicts");
@@ -474,7 +475,7 @@ void MainWindow::readSettings()
     }
     settings.endArray();
 }
-void MainWindow::writeSettings()
+void tf2mc::MainWindow::writeSettings()
 {
     //QSettings settings("Elbagast", "TF2_Mod_Conflicts");
     QSettings settings(getSettingsPath(), QSettings::IniFormat);

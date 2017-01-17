@@ -1,7 +1,7 @@
 #include "editablelistview.h"
 #include "editablelistmodel.h"
 
-EditableListView::EditableListView(QWidget *parent) :
+tf2mc::EditableListView::EditableListView(QWidget *parent) :
     QListView(parent)
 {
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -9,12 +9,12 @@ EditableListView::EditableListView(QWidget *parent) :
                      this, SLOT(onCustomContextMenuRequested(QPoint const&)));
 }
 
-//QSize EditableListView::viewportSizeHint() const
+//QSize tf2mc::EditableListView::viewportSizeHint() const
 //{
 //    return QSize(256,128);
 //}
 
-void EditableListView::onCustomContextMenuRequested(QPoint const& pos)
+void tf2mc::EditableListView::onCustomContextMenuRequested(QPoint const& pos)
 {
     QModelIndex index = this->currentIndex();
     EditableListModel* data_model = dynamic_cast<EditableListModel*>(this->model());

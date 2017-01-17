@@ -1,11 +1,13 @@
 #include "editablelistmodel.h"
 #include "editablelistview.h"
-#include <QMenu>
+
 #include <algorithm>
 #include <functional>
 #include <memory>
 
-EditableListModel::EditableListModel(QObject *parent) :
+#include <QMenu>
+
+tf2mc::EditableListModel::EditableListModel(QObject *parent) :
     QAbstractListModel(parent),
     m_headerText{},
     m_data{}
@@ -13,13 +15,13 @@ EditableListModel::EditableListModel(QObject *parent) :
 }
 
 // Read functions
-Qt::ItemFlags EditableListModel::flags(QModelIndex const& index) const
+Qt::ItemFlags tf2mc::EditableListModel::flags(QModelIndex const& index) const
 {
     if (!index.isValid())
         return Qt::NoItemFlags;
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
-QVariant EditableListModel::data(QModelIndex const& index, int role) const
+QVariant tf2mc::EditableListModel::data(QModelIndex const& index, int role) const
 {
     if (!index.isValid()) // ONLY checks that row and column are not negative...
         return QVariant();
@@ -32,18 +34,18 @@ QVariant EditableListModel::data(QModelIndex const& index, int role) const
     }
     return QVariant();
 }
-QVariant EditableListModel::headerData(int /*section*/, Qt::Orientation /*orientation*/, int /*role*/) const
+QVariant tf2mc::EditableListModel::headerData(int /*section*/, Qt::Orientation /*orientation*/, int /*role*/) const
 {
     return QVariant();
 }
-int EditableListModel::rowCount(QModelIndex const& /*parent*/) const
+int tf2mc::EditableListModel::rowCount(QModelIndex const& /*parent*/) const
 {
     return static_cast<int>(m_data.size() + 1);
 }
 
 // Write functions
 // This is used to edit the data structure with or without a delegate installed.
-bool EditableListModel::setData (QModelIndex const& index, QVariant const& value, int role)
+bool tf2mc::EditableListModel::setData (QModelIndex const& index, QVariant const& value, int role)
 {
     if (index.isValid() && role == Qt::EditRole)
     {
@@ -89,27 +91,27 @@ bool EditableListModel::setData (QModelIndex const& index, QVariant const& value
     }
     return false;
 }
-bool EditableListModel::setHeaderData ( int /*section*/, Qt::Orientation /*orientation*/, QVariant const& /*value*/, int /*role*/ )
+bool tf2mc::EditableListModel::setHeaderData ( int /*section*/, Qt::Orientation /*orientation*/, QVariant const& /*value*/, int /*role*/ )
 {
     return false;
 }
 
 
-void EditableListModel::setHeaderText(QString const& headerText)
+void tf2mc::EditableListModel::setHeaderText(QString const& headerText)
 {
     m_headerText = headerText;
 }
 
-QString const& EditableListModel::getHeaderText() const
+QString const& tf2mc::EditableListModel::getHeaderText() const
 {
     return m_headerText;
 }
-std::vector<QString> const& EditableListModel::getData() const
+std::vector<QString> const& tf2mc::EditableListModel::getData() const
 {
     return m_data;
 }
 
-void EditableListModel::addItem(QString const& item)
+void tf2mc::EditableListModel::addItem(QString const& item)
 {
     if(std::find(m_data.begin(), m_data.end(), item) == m_data.end())
     {
@@ -118,7 +120,7 @@ void EditableListModel::addItem(QString const& item)
 }
 
 // got to know which view this comes from so we can activate an editor in it
-void EditableListModel::doContextMenu(EditableListView* view, QModelIndex const& index, QPoint const& pos)
+void tf2mc::EditableListModel::doContextMenu(EditableListView* view, QModelIndex const& index, QPoint const& pos)
 {
     if (!index.isValid())
         return;
@@ -151,39 +153,39 @@ void EditableListModel::doContextMenu(EditableListView* view, QModelIndex const&
     menu.exec(pos);
 }
 
-bool EditableListModel::isDataRow(int row) const
+bool tf2mc::EditableListModel::isDataRow(int row) const
 {
     return row >= 0 && row < static_cast<int>(m_data.size());
 }
-bool EditableListModel::isDataRow(QModelIndex const& index) const
+bool tf2mc::EditableListModel::isDataRow(QModelIndex const& index) const
 {
     return isDataRow(index.row());
 }
 
-bool EditableListModel::isLastRow(int row) const
+bool tf2mc::EditableListModel::isLastRow(int row) const
 {
     return row == static_cast<int>(m_data.size());
 }
-bool EditableListModel::isLastRow(QModelIndex const& index) const
+bool tf2mc::EditableListModel::isLastRow(QModelIndex const& index) const
 {
     return isLastRow(index.row());
 }
 
 // private slots
-void EditableListModel::contextMenu_addItem(EditableListView* view)
+void tf2mc::EditableListModel::contextMenu_addItem(EditableListView* view)
 {
     // select the last element and open its editor
-    view->edit(createIndex(m_data.size(), 0, nullptr));
+    view->edit(createIndex(static_cast<int>(m_data.size()), 0, nullptr));
 }
-void EditableListModel::contextMenu_editItem(EditableListView* view, QModelIndex const& index)
+void tf2mc::EditableListModel::contextMenu_editItem(EditableListView* view, QModelIndex const& index)
 {
     view->edit(index);
 }
-void EditableListModel::contextMenu_removeItem(QModelIndex const& index)
+void tf2mc::EditableListModel::contextMenu_removeItem(QModelIndex const& index)
 {
     setData(index, QVariant(), Qt::EditRole);
 }
-void EditableListModel::contextMenu_sort()
+void tf2mc::EditableListModel::contextMenu_sort()
 {
     beginResetModel();
     std::sort(m_data.begin(), m_data.end(), std::less<QString>());

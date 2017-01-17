@@ -1,28 +1,29 @@
 #include "modconflict.h"
 #include "mod.h"
 #include "less_strcmp_qstring.h"
+
 #include <map>
 #include <algorithm>
 #include <functional>
 
-void ModConflict::addMod(QString const& modName)
+void tf2mc::ModConflict::addMod(QString const& modName)
 {
     m_modNames.push_back(modName);
     m_modNames.sort(less_strcmp_QString());
 }
-void ModConflict::addFile(QString const& filePath)
+void tf2mc::ModConflict::addFile(QString const& filePath)
 {
     m_filePaths.push_back(filePath);
     m_filePaths.sort(less_strcmp_QString());
 }
 
-void ModConflict::sort()
+void tf2mc::ModConflict::sort()
 {
     m_modNames.sort(less_strcmp_QString());
     m_filePaths.sort(less_strcmp_QString());
 }
 
-std::list<ModConflict> getModConflicts(std::list<Mod> const& modList)
+std::list<tf2mc::ModConflict> tf2mc::getModConflicts(std::list<Mod> const& modList)
 {
     std::list<ModConflict> results;
 
@@ -62,7 +63,7 @@ std::list<ModConflict> getModConflicts(std::list<Mod> const& modList)
             // find a conflict with that mod list
             auto existingConflictIterator = std::find_if(results.begin(),
                                                          results.end(),
-                                                         [&](ModConflict const& mc){ return mc.mods() == mods;} );
+                                                         [&mods](ModConflict const& mc){ return mc.mods() == mods;} );
             // if a conflict exists with that mod list add the file to it
             if (existingConflictIterator != results.end())
             {
